@@ -61,5 +61,4 @@ public class NoteListActivity extends AppCompatActivity {
             }
         });
     }
-
 }
