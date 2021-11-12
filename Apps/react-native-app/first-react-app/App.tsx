@@ -3,18 +3,19 @@ import Sidebar from './app/components/Sidebar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { css } from './app/config';
+import TodosView from './app/components/TodosView';
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <View style={Styles.container}>
       <Sidebar />
-      <Text style={styles.text}>Hello Daniel</Text>
+      <TodosView />
       {/* <StatusBar style="auto" /> */}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const Styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',

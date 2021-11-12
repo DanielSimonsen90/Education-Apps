@@ -4,13 +4,9 @@ import { css } from '../config';
 import SidebarItem from './SidebarItem';
 
 export default function Sidebar() {
-    const children = [
-        <SidebarItem style={Styles.sidebarItem} />,
-    ]
-
     return (
         <SafeAreaView style={Styles.container}>
-            {children}
+            <SidebarItem style={Styles.sidebarItem} />
         </SafeAreaView>
     )
 }

@@ -1,5 +1,8 @@
+
+type DateString<Sep extends string = '/'> = `${number}${Sep}${number}${Sep}${number}`;
+type DateTimeString = `${DateString<"-">}T${DateString<":">}`
 type TodoItemOptions = {
-    deadline?: Date,
+    deadline?: Date | DateString | DateTimeString,
     completed?: boolean
 }
 type Nullable<T> = T | null;
@@ -23,7 +26,7 @@ export default class TodoItem {
         if (description) this.description = description;
 
         this.completed = options?.completed ?? false;
-        this.deadline = options?.deadline ?? null;
+        this.deadline = options?.deadline && new Date(options.deadline) || null;
     }
 
     private _title: string;
