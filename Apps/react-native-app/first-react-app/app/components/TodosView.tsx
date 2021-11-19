@@ -1,37 +1,42 @@
-import React, { useMemo, useState } from 'react'
-import { SafeAreaView, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Modal, SafeAreaView, Text } from 'react-native'
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
-// import { useAsync } from 'danholibraryrjs'
 import TodoItem from '../models/TodoItem'
-import Error from './utils/Error'
 import TodoListView from './TodoListView'
+import TodoItemModal from './TodoItemModal'
+import { Button } from 'react-native-elements'
 
 export default function TodosView() {
     const manager = useAsyncStorage('todos');
-    // const todos = useAsync(async () => {
-    //     const json = await manager.getItem((err, data) => {
-    //         if (data) return data;
-    //         if (err) console.error(err);
-    //         return "[]";
-    //     }) ?? "[]";
-    //     return JSON.parse(json) as Array<TodoItem>;
-    // });
-    const todos = {
-        loading: false, error: null, 
-        value: [
-            new TodoItem(
-                "Push DanhoLibraryRJS to Github", 
-                "It's very important to do this, because I may work on this when I visit dear mother", 
-                { deadline: `2021-11-12T15:00:00` }
-            )
-        ]
-    }
+    const [todos, setTodos] = useState(new Array<TodoItem>());
+    const [showModal, setShowModal] = useState(false);
+    const [modalItem, setModalItem] = useState<TodoItem>(null as unknown as TodoItem);
+
+    useEffect(() => {
+        manager.getItem((err, data) => {
+            if (data) return data;
+            if (err) console.error(err);
+            return "[]";
+        }).then(json => setTodos(json && JSON.parse(json) as Array<TodoItem> || new Array<TodoItem>()))
+    }, [])
+
+    useEffect(() => {
+        console.log(`Modal should ${!showModal ? 'not ' : ''}be showing`)
+    }, [showModal])
 
     return (
-        todos.loading || !todos.value ? <Text>Loading todos...</Text> :
-        todos.error ? <Error error={todos.error} /> :
         <SafeAreaView>
-            {todos.value.map((todo, i) => <TodoListView value={todo} key={i}/>)}
+            <Modal transparent animationType='slide' visible={showModal} onRequestClose={() => setShowModal(false)} style={}>
+                <TodoItemModal value={modalItem} />
+            </Modal>
+            {todos.map((todo, i) => <TodoListView key={i} value={todo} onModalPress={i => {
+                setModalItem(i);
+                setShowModal(true);
+            }} />)}
+            <Button onPress={() => {
+                const item = new TodoItem(`Todo test #${todos.length + 1}`, 'This is a marvelous test!')
+                setTodos(v => [...v, item])
+            }} title="Add Item" />
         </SafeAreaView>
     )
 }
