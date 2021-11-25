@@ -2,7 +2,6 @@ import { BaseProps } from 'danholibraryrjs'
 import React from 'react'
 import Pressable from './Pressable'
 import { Modal as BaseModal, ModalProps, StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-elements'
 import { useModalVisibility } from './providers/ModalVisibilityProvider'
 import { css } from '../../../config';
 
@@ -24,7 +23,6 @@ export default function Modal({ children, style, ..._props }: Props) {
             <BaseModal {...props}>
                 <Pressable onPress={e => e.preventDefault()}>
                     <View style={[ModalStyles.modal, style]}>{children}</View>
-                    <Text>Hello</Text>
                 </Pressable>
             </BaseModal>
         </Pressable>
@@ -34,7 +32,8 @@ export default function Modal({ children, style, ..._props }: Props) {
 const ModalStyles = StyleSheet.create({
     modal: {
         backgroundColor: css.backgroundColor.secondary, color: css.color.secondary,
-        width: '25vw', height: '25vh', padding: '1em',
+        width: '50vw', height: '50vh', 
+        padding: '1em',
         position: 'absolute',
         display: 'flex', alignSelf: 'center',
         shadowColor: "#000", shadowOffset: { height: 5, width: 0 }, shadowOpacity: .5, shadowRadius: 10,
