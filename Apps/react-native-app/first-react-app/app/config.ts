@@ -6,6 +6,7 @@ export const css = {
     color: {
         primary: "#ddd",
         secondary: "#eee",
+        dampen: "rgba(255, 255, 255, .8)",
         confirm: "#00EB31",
         cancel: "#F13751"
     }

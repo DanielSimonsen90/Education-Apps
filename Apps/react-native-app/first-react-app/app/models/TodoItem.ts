@@ -25,6 +25,12 @@ export default class TodoItem {
         else if (now.getTime() > deadline.getTime() && !completed) return 'Missed';
         return 'Passed';
     }
+    public static JsonParse(o: any) {
+        return new TodoItem(o['_title'], o['_description'], {
+            completed: o['completed'],
+            deadline: o['deadline'] && new Date(o['deadline'])
+        })
+    }
 
     constructor(title: string, description?: string, options?: TodoItemOptions) {
         this._title = "My todo";

@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import { css } from '../config'
-
+import { View, StyleSheet } from 'react-native'
+import Text from './utils/react-native-components/Text';
 
 type Props = {
     style: StyleSheet.NamedStyles<{}>
@@ -10,13 +9,7 @@ type Props = {
 export default function SidebarItem({ style }: Props) {
     return (
         <View style={style}>
-            <Text style={styles.text}>Hello, World!</Text>
+            <Text>Hello, World!</Text>
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    text: {
-        color: css.color.primary
-    }
-})
