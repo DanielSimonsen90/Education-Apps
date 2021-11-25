@@ -4,7 +4,7 @@ import { Pressable as BasePressable, PressableProps, StyleSheet, View } from 're
 type BasePressableProps = PressableProps & React.RefAttributes<View>
 
 export default function Pressable(props: BasePressableProps) {
-    return <BasePressable />
+    return <BasePressable {...props} />
 }
 
 export function PressableNoShow() {

@@ -2,6 +2,7 @@ import { BaseProps } from 'danholibraryrjs'
 import React from 'react'
 import Pressable from './Pressable'
 import { Modal as BaseModal, ModalProps, StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-elements'
 import { useModalVisibility } from './providers/ModalVisibilityProvider'
 import { css } from '../../../config';
 
@@ -18,13 +19,12 @@ export default function Modal({ children, style, ..._props }: Props) {
         visible, 
     }, _props)
 
-    if (!visible) return null;
-
     return (
         <Pressable onPress={() => setVisible(false)}>
             <BaseModal {...props}>
                 <Pressable onPress={e => e.preventDefault()}>
                     <View style={[ModalStyles.modal, style]}>{children}</View>
+                    <Text>Hello</Text>
                 </Pressable>
             </BaseModal>
         </Pressable>
@@ -39,5 +39,5 @@ const ModalStyles = StyleSheet.create({
         display: 'flex', alignSelf: 'center',
         shadowColor: "#000", shadowOffset: { height: 5, width: 0 }, shadowOpacity: .5, shadowRadius: 10,
         borderRadius: 6, transform: [{ translateY: 100 }]
-    }
+    },
 })

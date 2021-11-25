@@ -7,6 +7,7 @@ import TodoItemModal from './TodoItemModal'
 import { Button } from 'react-native-elements'
 import Modal from './utils/react-native-components/Modal'
 import { useModalVisibility } from './utils/react-native-components/providers/ModalVisibilityProvider'
+import { Text } from 'react-native-elements'
 
 export default function TodosView() {
     const manager = useAsyncStorage('todos');
@@ -38,6 +39,7 @@ export default function TodosView() {
     return (
         <SafeAreaView>
             <Modal>
+                <Text>Hello there</Text>
                 <TodoItemModal value={modalItem} />
             </Modal>
             {todos.map((todo, i) => <TodoListView key={i} value={todo} onModalPress={onModalPress} />)}
