@@ -15,9 +15,6 @@ type Props = BaseProps & {
 export default function ModalVisibilityProvider({ children }: Props) {
     const [visible, setVisible] = useState(false);
 
-    console.log("Visibility", visible);
-    
-
     return (
         <ModalContext.Provider value={[setVisible, visible]}>
             {children}

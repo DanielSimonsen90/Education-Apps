@@ -1,28 +1,70 @@
 import { BaseProps } from 'danholibraryrjs'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { ListItem, colors, Button } from 'react-native-elements'
+import { css, getPercentage, useDimensions } from '../config'
 import TodoItem from '../models/TodoItem'
+import { ModifyTodoType } from './TodosView'
+import { useTodo } from './utils/providers/TodosProvider'
 
 type Props = BaseProps & {
-    value: TodoItem
-    onModalPress: (todoItem: TodoItem) => void
+    todo: TodoItem
+    reducer: (item: TodoItem, reducer: ModifyTodoType) => void
 }
 
-export default function TodoListView({ value, onModalPress }: Props) {
-    const { title, description, deadline } = value;
-    const [completed, setCompleted] = useState(value.completed);
-    const deadlineBtn = <Button title="Deadline" icon={{ name: 'schedule', color: 'white' }} buttonStyle={{ minHeight: '100%' }} />
-    const deleteBtn = <Button title="Delete" icon={{ name: 'delete', color: 'white' }} buttonStyle={{ minHeight: '100%', backgroundColor: colors.error }} />
-
-    const toggleCompleted = () => setCompleted(v => !v);
+export default function TodoListView({ todo, reducer }: Props) {
+    const [value, setValue] = useTodo(i => i == todo);
+    const { title, description, completed, deadline } = value;
+    const setCompleted = (state: boolean) => setValue(({ title, description, deadline }) => new TodoItem(title, description, { deadline, completed: state }))
+    // const [completed, setCompleted] = useState(value.completed);
+    
+    const deadlineBtn = <Button title="Deadline" 
+        icon={{ name: 'schedule', color: 'white' }} 
+        buttonStyle={{ height: swipeHeight }} 
+    />
+    const deleteBtn = <Button title="Delete" 
+        icon={{ name: 'delete', color: 'white' }} 
+        buttonStyle={{ height: swipeHeight, backgroundColor: colors.error }} 
+        onPress={() => reducer(todo, 'delete')}
+    />
 
     return (
-        <ListItem.Swipeable bottomDivider leftContent={deadlineBtn} rightContent={deleteBtn} onPress={() => onModalPress(value)}>
+        <ListItem.Swipeable bottomDivider style={Styles.swipeable}
+            leftContent={deadlineBtn} rightContent={deleteBtn} 
+        >
             <ListItem.Content>
-                <ListItem.CheckBox checked={completed} onPress={toggleCompleted} />
-                <ListItem.Title>{title}</ListItem.Title>
-                <ListItem.Subtitle>{description}</ListItem.Subtitle>
+                <View style={Styles.top}>
+                    <ListItem.Title>{title}</ListItem.Title>
+                    <ListItem.CheckBox checked={completed} onPress={() => setCompleted(!completed)} />
+                </View>
+                <ListItem.Subtitle style={Styles.description}>{
+                    description.length > MaxDescriptionLength ? 
+                        `${description.substring(0, MaxDescriptionLength)}...` : 
+                        description
+                    }
+                </ListItem.Subtitle>
             </ListItem.Content>
         </ListItem.Swipeable>
     )
 }
+
+const { height } = useDimensions();
+const MaxDescriptionLength = 250;
+const swipeHeight = getPercentage(height, 20);
+// const swipeHeight = '25%';
+
+const Styles = StyleSheet.create({
+    swipeable: {
+        width: '100%', height: swipeHeight,
+        backgroundColor: css.backgroundColor.primary,
+        paddingTop: '2%', paddingBottom: '2%',
+        overflow: 'hidden'
+    },
+    top: {
+        display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
+        width: '100%'
+    },
+    description: {
+        overflow: 'hidden'
+    }
+})

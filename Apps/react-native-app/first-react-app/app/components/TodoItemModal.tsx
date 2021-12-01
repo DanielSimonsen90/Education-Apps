@@ -1,8 +1,9 @@
 import { BaseProps } from 'danholibraryrjs';
-import React, { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Dimensions, SafeAreaView, StyleSheet, View } from 'react-native'
 import { CheckBox } from 'react-native-elements'
-import { css } from '../config';
+import { ListItem } from 'react-native-elements/dist/ListItem';
+import { css, getPercentage } from '../config';
 import TodoItem from '../models/TodoItem';
 import { useTodo } from './utils/providers/TodosProvider';
 import Text from './utils/react-native-components/Text';
@@ -13,20 +14,22 @@ type Props = BaseProps & {
 
 export default function TodoItemModal(props: Props) {
     const [value, setValue] = useTodo(i => i == props.value);
-    const [completed, setCompleted] = [value.completed, (completed: boolean | ((val: boolean) => boolean)) => {
-        setValue(v => {
-            v.completed = completed(v.completed) || completed;
-            return v;
-        });
-        return completed;
-    }];
     const { title, description, deadline } = value;
+    const [completed, setCompleted] = useState(value.completed);
     const deadlineResult = TodoItem.GetDeadlineResult(value);
-    const { containerStyles, elementStyles, deadlineStyles } = TodoItemModalStyles(props);
+
+    const { containerStyles, elementStyles, deadlineStyles } = TodoItemModalStyles();
     const onCompletedPressed = () => setCompleted(v => !v);
 
+    useEffect(() => {
+        setValue(v => {
+            v.completed = completed;
+            return v;
+        })
+    }, [completed]);
+
     return (
-        <>
+        <SafeAreaView>
             <View style={containerStyles.top}>
                 <Text style={elementStyles.title}>{title}</Text>
                 <CheckBox checked={completed} style={elementStyles.completed} onPress={onCompletedPressed} onLongPress={() => alert("Hello!")} />
@@ -41,49 +44,53 @@ export default function TodoItemModal(props: Props) {
                     deadlineStyles.future
                 )}}>{deadline.toString()}</Text>}
             </View>
-        </>
+        </SafeAreaView>
     )
 }
 
-const TodoItemModalStyles = (props: Props) => ({
-    containerStyles: StyleSheet.create({
-        top: {
-            display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between'
-        },
-        description: {
+const TodoItemModalStyles = () => {
+    const { height, width } = Dimensions.get('window');
 
-        },
-        bottom: {
+    return {
+        containerStyles: StyleSheet.create({
+            top: {
+                display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between'
+            },
+            description: {
 
-        }
-    }),
-    elementStyles: StyleSheet.create({
-        title: {
-            width: '100%',
-            fontSize: 24,
-            fontWeight: 'bold',
-            display: 'flex', alignSelf: 'center'
-        },
-        description: {
-            paddingLeft: '.33rem',
-            color: css.color.dampen
-        },
-        completed: {
+            },
+            bottom: {
 
-        },
-        deadline: {
+            }
+        }),
+        elementStyles: StyleSheet.create({
+            title: {
+                width: '100%',
+                fontSize: 24, fontWeight: 'bold', 
+                textDecorationLine: 'underline', textDecorationColor: css.color.primary,textDecorationStyle: 'solid',
+                display: 'flex', alignSelf: 'center', justifyContent: 'center'
+            },
+            description: {
+                paddingLeft: '2%',
+                color: css.color.dampen
+            },
+            completed: {
 
-        }
-    }),
-    deadlineStyles: StyleSheet.create({
-        passed: {
+            },
+            deadline: {
 
-        },
-        missed: {
+            }
+        }),
+        deadlineStyles: StyleSheet.create({
+            passed: {
 
-        },
-        future: {
+            },
+            missed: {
 
-        }
-    })
-})
+            },
+            future: {
+
+            }
+        })
+    }
+}

@@ -9,7 +9,7 @@ type Props = {
 export default function SidebarItem({ style }: Props) {
     return (
         <View style={style}>
-            <Text>Hello, World!</Text>
+            <Text>Hello, World! :3</Text>
         </View>
     )
 }

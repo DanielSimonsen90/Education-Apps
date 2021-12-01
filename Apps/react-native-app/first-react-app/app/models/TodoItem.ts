@@ -1,10 +1,11 @@
+export type Nullable<T> = T | null;
+
 type DateString<Sep extends string = '/'> = `${number}${Sep}${number}${Sep}${number}`;
 type DateTimeString = `${DateString<"-">}T${DateString<":">}`
 type TodoItemOptions = {
-    deadline?: Date | DateString | DateTimeString,
+    deadline?: Nullable<Date> | DateString | DateTimeString,
     completed?: boolean
 }
-type Nullable<T> = T | null;
 
 const MustBeWord = /\w+/;
 const Regex = {

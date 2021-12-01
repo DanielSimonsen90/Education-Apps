@@ -1,9 +1,9 @@
 import { BaseProps } from 'danholibraryrjs'
 import React from 'react'
 import Pressable from './Pressable'
-import { Modal as BaseModal, ModalProps, StyleSheet, View } from 'react-native';
+import { Modal as BaseModal, ModalProps, StyleSheet, View, Dimensions, SafeAreaView } from 'react-native';
 import { useModalVisibility } from './providers/ModalVisibilityProvider'
-import { css } from '../../../config';
+import { css, getPercentage } from '../../../config';
 
 type Props = BaseProps & ModalProps & {
 
@@ -21,22 +21,27 @@ export default function Modal({ children, style, ..._props }: Props) {
     return (
         <Pressable onPress={() => setVisible(false)}>
             <BaseModal {...props}>
-                <Pressable onPress={e => e.preventDefault()}>
-                    <View style={[ModalStyles.modal, style]}>{children}</View>
+                <Pressable onPress={() => setVisible(false)} >
+                    <SafeAreaView style={[ModalStyles.modal, style]}>{children}</SafeAreaView>
                 </Pressable>
             </BaseModal>
         </Pressable>
     )
 }
 
-const ModalStyles = StyleSheet.create({
-    modal: {
-        backgroundColor: css.backgroundColor.secondary, color: css.color.secondary,
-        width: '50vw', height: '50vh', 
-        padding: '1em',
-        position: 'absolute',
-        display: 'flex', alignSelf: 'center',
-        shadowColor: "#000", shadowOffset: { height: 5, width: 0 }, shadowOpacity: .5, shadowRadius: 10,
-        borderRadius: 6, transform: [{ translateY: 100 }]
-    },
-})
+const ModalStyles = (() => {
+    const { height, width } = Dimensions.get('window');
+
+    return StyleSheet.create({
+        modal: {
+            backgroundColor: css.backgroundColor.secondary, color: css.color.secondary,
+            width: '90%', height: getPercentage(height, 90),
+            paddingLeft: '2%', paddingBottom: '5%',
+            position: 'absolute',
+            display: 'flex', alignSelf: 'center',
+            shadowColor: "#000", shadowOffset: { height: 5, width: 0 }, shadowOpacity: .5, shadowRadius: 10,
+            borderRadius: 6, transform: [{ translateY: getPercentage(height, 5) }],
+            overflow: 'scroll'
+        },
+    })
+})()
