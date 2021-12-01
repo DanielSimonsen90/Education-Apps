@@ -36,7 +36,7 @@ const ModalStyles = (() => {
         modal: {
             backgroundColor: css.backgroundColor.secondary, color: css.color.secondary,
             width: '90%', height: getPercentage(height, 90),
-            paddingLeft: '2%', paddingBottom: '5%',
+            paddingLeft: '2%', paddingBottom: '5%', paddingRight: '2%', paddingTop: '5%',
             position: 'absolute',
             display: 'flex', alignSelf: 'center',
             shadowColor: "#000", shadowOffset: { height: 5, width: 0 }, shadowOpacity: .5, shadowRadius: 10,

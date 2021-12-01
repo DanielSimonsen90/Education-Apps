@@ -43,8 +43,8 @@ export function useConfirmProps({ question, onConfirm, onCancel }: Props): [conf
         <Modal style={Styles.modal}>
             <Text value={question} />
             <View style={Styles.buttonContainer}>
-                <Button style={Styles.buttons} onPress={_onConfirm} title="Confirm" type="confirm" />
-                <Button style={Styles.buttons} onPress={_onCancel} title="Cancel" type="cancel" />
+                <Button onPress={_onConfirm} title="Confirm" type="confirm" />
+                <Button onPress={_onCancel} title="Cancel" type="cancel" />
             </View>
         </Modal>
     );
@@ -66,8 +66,5 @@ const Styles = StyleSheet.create({
     },
     buttonContainer: {
         display: 'flex', flexDirection: 'row', width: '100%', overflow: 'hidden'
-    },
-    buttons: {
-        width: getPercentage(width, 50)
     }
 })

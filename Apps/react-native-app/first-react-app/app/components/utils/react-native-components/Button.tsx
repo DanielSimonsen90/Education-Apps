@@ -31,20 +31,30 @@ export default function Button({ type = 'default', style: _style, children, titl
     const pressableProps = { onPress, onLongPress };
     const style = ((): ButtonStyle => {
         const fallback = {};
-        let result = StyleSheet.compose(Styles.defaultStyle, btnTypeStyle) ?? fallback;
+        // let result = StyleSheet.compose(
+        //     StyleSheet.flatten(Styles.defaultStyle), 
+        //     StyleSheet.flatten(btnTypeStyle)
+        // ) ?? fallback;
+        // if (!_style) return result;
+        
+        // return StyleSheet.compose(
+        //     StyleSheet.flatten(_style), 
+        //     StyleSheet.flatten(result)
+        // ) ?? fallback;
+        let result = StyleSheet.flatten([Styles.defaultStyle, btnTypeStyle]);
         if (!_style) return result;
 
-        return StyleSheet.compose(StyleSheet.flatten(_style), result) ?? fallback;
+        return StyleSheet.flatten([result, _style]) as ButtonStyle
     })();
     
     return (
-        <Pressable {...pressableProps}>
+        <Pressable {...pressableProps} style={Styles.pressable}>
             <SafeAreaView style={style}>
                 { icon != null && iconContainerStyle != null && iconPosition != null && iconRight != null && (() => {
                     const iconProps = Object.assign(icon, iconContainerStyle, iconPosition, iconRight)
                     return <Icon {...iconProps} />
                 })}
-                {title && <Text style={{ color: Styles.defaultStyle.color }}>{title}</Text> || children}
+                {title && <Text style={{ color: Styles.defaultStyle.color }} margin={0}>{title}</Text> || children}
             </SafeAreaView>
         </Pressable>
     )
@@ -56,7 +66,7 @@ const Styles = StyleSheet.create({
         backgroundColor: css.backgroundColor.secondary, color: colors.white,
         paddingTop: '3%', paddingBottom: '3%', paddingLeft: '2.5%', paddingRight: '2.5%',
         marginTop: '2.5%',
-        width: '90%', height: '10%', minHeight: 50,
+        width: '90%', minHeight: 40,
         borderRadius: 6
     },
     confirm: {
@@ -64,6 +74,8 @@ const Styles = StyleSheet.create({
     },
     cancel: {
         backgroundColor: css.color.cancel
-
+    },
+    pressable: {
+        flexGrow: 1
     }
 })

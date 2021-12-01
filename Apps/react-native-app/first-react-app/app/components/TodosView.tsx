@@ -5,7 +5,7 @@ import TodoListView from './TodoListView'
 import { useTodos } from './utils/providers/TodosProvider'
 import Button from './utils/react-native-components/Button'
 import Text from './utils/react-native-components/Text'
-import { css } from '../config'
+import { css, getPercentage, useDimensions } from '../config'
 import useConfirm from '../hooks/useConfirm'
 
 export type ModifyTodoType = 'delete'
@@ -24,7 +24,7 @@ export default function TodosView() {
     const onClearCompletedPressed = (e: PressEvent) => triggerConfirm();
 
     const clearCompletedComponent = todosToClear > 0 && (
-        <Button onPress={onClearCompletedPressed} title="Clear Completed" type="cancel" icon={{ name: 'delete', color: 'white' }} />
+        <Button style={Styles.button} onPress={onClearCompletedPressed} title="Clear Completed" type="cancel" icon={{ name: 'delete', color: 'white' }} />
     );
     const todoItemsListView = todos.length > 0 && (
         todos.map((todo, i) => ( 
@@ -37,11 +37,13 @@ export default function TodosView() {
     return (
         <SafeAreaView style={Styles.container}>
             {modal}
-            {clearCompletedComponent}
             <SafeAreaView style={Styles.listContainer}>
                 {todoItemsListView}
             </SafeAreaView>
-            <Button onPress={onAddItemPress} title="Add Item" type="confirm" icon={{ name: 'add', color: 'white' }}/>
+            <SafeAreaView style={Styles.buttonContainer}>
+                <Button style={Styles.button} onPress={onAddItemPress} title="Add Item" type="confirm" icon={{ name: 'add', color: 'white' }}/>
+                {clearCompletedComponent}
+            </SafeAreaView>
         </SafeAreaView>
     )
 
@@ -60,6 +62,12 @@ const Styles = StyleSheet.create({
     listContainer: {
         display: 'flex', flexDirection: 'column',
         overflow: 'hidden'
+    },
+    buttonContainer: {
+        display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', width: '100%', marginTop: 5
+    },
+    button: {
+        flexGrow: 1, flexBasis: '100%', 
     },
     addItem: {
         position: 'relative', bottom: 0,
