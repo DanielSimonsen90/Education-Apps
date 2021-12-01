@@ -25,10 +25,7 @@ export function useTodo(predicate: (item: TodoItem, index: number, array: Array<
         setTodos(arr => replaceTodo(arr, v));
     }
 
-    console.log('useTodo');
-
     useEffect(() => {
-        console.log('useTodo useEffect[todo]');
         setTodos(arr => replaceTodo(arr, todo))
     }, [todo]);
 
@@ -43,11 +40,7 @@ export default function TodosProvider({ children }: Props) {
     const manager = useAsyncStorage('todos');
     const [todos, setTodos] = useState(new Array<TodoItem>());
 
-    console.log('useTodos');
-
     useEffect(() => {
-        console.log('useTodos useEffect[]');
-        
         manager.getItem((err, data) => {
             if (data) return data;
             if (err) console.error(err);
@@ -58,8 +51,6 @@ export default function TodosProvider({ children }: Props) {
         })
     }, [])
     useEffect(() => { 
-        console.log('useTodos useEffect[todos]');
-        
         manager.setItem(JSON.stringify(todos), err => err && console.error(err)) 
     }, [todos])
 

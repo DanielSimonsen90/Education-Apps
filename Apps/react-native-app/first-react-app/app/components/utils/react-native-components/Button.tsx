@@ -1,7 +1,7 @@
 import { BaseProps } from 'danholibraryrjs'
 import React from 'react'
 import { SafeAreaView, StyleSheet, TextStyle } from 'react-native';
-import { Button as BaseButton, ButtonProps, colors, Icon } from 'react-native-elements'
+import { ButtonProps, colors, Icon } from 'react-native-elements'
 import { css } from '../../../config';
 import Pressable from './Pressable';
 import Text from './Text';
@@ -13,11 +13,6 @@ type Props = BaseProps<false> & Omit<ButtonProps, 'type'> & {
     type?: ButtonTypes,
 }
 
-// export default function Button({ type = 'default', ...props }: Props) {
-//     return (
-//         <BaseButton {...props} />
-//     )
-// }
 export default function Button({ type = 'default', style: _style, children, title, ...props }: Props) {
     const { onPress, onLongPress } = props;
     const { icon, iconContainerStyle, iconPosition, iconRight } = props;
@@ -30,17 +25,6 @@ export default function Button({ type = 'default', style: _style, children, titl
     })()
     const pressableProps = { onPress, onLongPress };
     const style = ((): ButtonStyle => {
-        const fallback = {};
-        // let result = StyleSheet.compose(
-        //     StyleSheet.flatten(Styles.defaultStyle), 
-        //     StyleSheet.flatten(btnTypeStyle)
-        // ) ?? fallback;
-        // if (!_style) return result;
-        
-        // return StyleSheet.compose(
-        //     StyleSheet.flatten(_style), 
-        //     StyleSheet.flatten(result)
-        // ) ?? fallback;
         let result = StyleSheet.flatten([Styles.defaultStyle, btnTypeStyle]);
         if (!_style) return result;
 
@@ -65,7 +49,7 @@ const Styles = StyleSheet.create({
         display: 'flex', alignSelf: 'center', justifyContent: 'center', alignItems: 'center',
         backgroundColor: css.backgroundColor.secondary, color: colors.white,
         paddingTop: '3%', paddingBottom: '3%', paddingLeft: '2.5%', paddingRight: '2.5%',
-        marginTop: '2.5%',
+        marginTop: 5,
         width: '90%', minHeight: 40,
         borderRadius: 6
     },

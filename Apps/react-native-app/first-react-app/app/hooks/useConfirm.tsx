@@ -1,11 +1,10 @@
 import { BaseProps } from 'danholibraryrjs';
-import React, { useState } from 'react';
+import React from 'react';
 import { View, GestureResponderEvent as PressEvent, StyleSheet } from 'react-native';
 import Button from '../components/utils/react-native-components/Button';
 import Modal from '../components/utils/react-native-components/Modal';
 import { useModalVisibility } from '../components/utils/react-native-components/providers/ModalVisibilityProvider';
 import Text from '../components/utils/react-native-components/Text';
-import { getPercentage, useDimensions } from '../config';
 
 type PressEventHandler = (e: PressEvent) => void;
 type Props = Omit<BaseProps<false>, 'style'> & {
@@ -21,21 +20,18 @@ type Props = Omit<BaseProps<false>, 'style'> & {
     onConfirm?: PressEventHandler
     onCancel?: PressEventHandler
 }
-export function useConfirmProps({ question, onConfirm, onCancel }: Props): [confirmed: boolean, modal: JSX.Element, callConfirm: () => void] {
+export function useConfirmProps({ question, onConfirm, onCancel }: Props): [modal: JSX.Element, callConfirm: () => void] {
     const [setVisibility, visibility] = useModalVisibility();
-    const [confirmed, setConfirmed] = useState(false);
 
     const _onConfirm = (e: PressEvent) => {
         setVisibility(false);
         onConfirm?.(e);
-        setConfirmed(true);
         console.log("useConfirm true");
         
     }
     const _onCancel = (e: PressEvent) => {
         setVisibility(false)
         onCancel?.(e);
-        setConfirmed(false);
         console.log("useConfirm false");
     }
 
@@ -51,7 +47,7 @@ export function useConfirmProps({ question, onConfirm, onCancel }: Props): [conf
 
     const callConfirm = () => setVisibility(true);
 
-    return [confirmed, modal, callConfirm]
+    return [modal, callConfirm]
 }
 export function useConfirmParams(question: string, onConfirm?: PressEventHandler, onCancel?: PressEventHandler) {
     return useConfirmProps({ question, onConfirm, onCancel })
@@ -59,7 +55,6 @@ export function useConfirmParams(question: string, onConfirm?: PressEventHandler
 
 export default useConfirmParams;
 
-const { width } = useDimensions();
 const Styles = StyleSheet.create({
     modal: {
         overflow: 'hidden'

@@ -1,31 +1,29 @@
 import { BaseProps } from 'danholibraryrjs'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { ListItem, colors, Button } from 'react-native-elements'
 import { css, getPercentage, useDimensions } from '../config'
 import TodoItem from '../models/TodoItem'
-import { ModifyTodoType } from './TodosView'
 import { useTodo } from './utils/providers/TodosProvider'
 
 type Props = BaseProps & {
     todo: TodoItem
-    reducer: (item: TodoItem, reducer: ModifyTodoType) => void
+    onDelete: () => void
 }
 
-export default function TodoListView({ todo, reducer }: Props) {
+export default function TodoListView({ todo, onDelete }: Props) {
     const [value, setValue] = useTodo(i => i == todo);
     const { title, description, completed, deadline } = value;
     const setCompleted = (state: boolean) => setValue(({ title, description, deadline }) => new TodoItem(title, description, { deadline, completed: state }))
-    // const [completed, setCompleted] = useState(value.completed);
     
     const deadlineBtn = <Button title="Deadline" 
         icon={{ name: 'schedule', color: 'white' }} 
-        buttonStyle={{ height: swipeHeight }} 
+        buttonStyle={{ height: swipeHeight }}
     />
     const deleteBtn = <Button title="Delete" 
         icon={{ name: 'delete', color: 'white' }} 
         buttonStyle={{ height: swipeHeight, backgroundColor: colors.error }} 
-        onPress={() => reducer(todo, 'delete')}
+        onPress={onDelete}
     />
 
     return (
@@ -51,7 +49,6 @@ export default function TodoListView({ todo, reducer }: Props) {
 const { height } = useDimensions();
 const MaxDescriptionLength = 250;
 const swipeHeight = getPercentage(height, 20);
-// const swipeHeight = '25%';
 
 const Styles = StyleSheet.create({
     swipeable: {
