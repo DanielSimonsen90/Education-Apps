@@ -1,6 +1,6 @@
 import { BaseProps } from 'danholibraryrjs'
 import React from 'react'
-import { SafeAreaView, StyleSheet, TextStyle } from 'react-native';
+import { GestureResponderEvent as PressEvent, SafeAreaView, StyleSheet, TextStyle } from 'react-native';
 import { ButtonProps, colors, Icon } from 'react-native-elements'
 import { css } from '../../../config';
 import Pressable from './Pressable';
@@ -13,7 +13,7 @@ type Props = BaseProps<false> & Omit<ButtonProps, 'type'> & {
     type?: ButtonTypes,
 }
 
-export default function Button({ type = 'default', style: _style, children, title, ...props }: Props) {
+export default function Button({ type = 'default', style: _style, children, title, disabled, ...props }: Props) {
     const { onPress, onLongPress } = props;
     const { icon, iconContainerStyle, iconPosition, iconRight } = props;
     const btnTypeStyle = (() => {
@@ -23,12 +23,19 @@ export default function Button({ type = 'default', style: _style, children, titl
             default: return null
         }
     })()
-    const pressableProps = { onPress, onLongPress };
+    const pressableProps = { 
+        onPress: (e: PressEvent) => {
+            if (!disabled) return onPress?.(e);
+        },
+        onLongPress: (e: PressEvent) => {
+            if (!disabled) return onLongPress?.(e);
+        }
+     };
     const style = ((): ButtonStyle => {
-        let result = StyleSheet.flatten([Styles.defaultStyle, btnTypeStyle]);
+        let result = StyleSheet.flatten([Styles.defaultStyle, btnTypeStyle, disabled && getDisabledStyle(type)]);
         if (!_style) return result;
 
-        return StyleSheet.flatten([result, _style]) as ButtonStyle
+        return StyleSheet.flatten([result, _style, disabled && getDisabledStyle(type)]) as ButtonStyle
     })();
     
     return (
@@ -63,3 +70,12 @@ const Styles = StyleSheet.create({
         flexGrow: 1
     }
 })
+
+function getDisabledStyle(type: ButtonTypes) {
+    const backgroundColor = (
+        type == 'confirm' ? css.color.confirmDisabled :
+        type == 'cancel' ? css.color.cancelDisabled :
+        css.backgroundColor.secondaryDisabled
+    );
+    return { backgroundColor }
+}
