@@ -57,7 +57,7 @@ const Styles = StyleSheet.create({
         backgroundColor: css.backgroundColor.secondary, color: colors.white,
         paddingTop: '3%', paddingBottom: '3%', paddingLeft: '2.5%', paddingRight: '2.5%',
         marginTop: 5,
-        width: '90%', minHeight: 40,
+        width: '90%', minHeight: 40, maxHeight: 60,
         borderRadius: 6
     },
     confirm: {

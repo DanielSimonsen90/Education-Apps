@@ -21,7 +21,7 @@ export default function Modal({ children, style, ..._props }: Props) {
     return (
         <Pressable onPress={() => setVisible(false)}>
             <BaseModal {...props}>
-                <Pressable onPress={() => setVisible(false)} >
+                <Pressable onPress={() => setVisible(false)}>
                     <SafeAreaView style={[ModalStyles.modal, style]}>{children}</SafeAreaView>
                 </Pressable>
             </BaseModal>

@@ -8,7 +8,8 @@ import Text from '../components/utils/react-native-components/Text';
 
 type PressEventHandler = (e: PressEvent) => void;
 type Props = Omit<BaseProps<false>, 'style'> & {
-    question: string
+    question?: string
+    content?: JSX.Element
     // style?: {
     //     modal?: Styleable,
     //     text?: StyleProp<TextStyle>,
@@ -20,8 +21,8 @@ type Props = Omit<BaseProps<false>, 'style'> & {
     onConfirm?: PressEventHandler
     onCancel?: PressEventHandler
 }
-export function useConfirmProps({ question, onConfirm, onCancel }: Props): [modal: JSX.Element, callConfirm: () => void] {
-    const [setVisibility, visibility] = useModalVisibility();
+export function useConfirmProps({ question, content, onConfirm, onCancel }: Props): [modal: JSX.Element, callConfirm: () => void] {
+    const [setVisibility] = useModalVisibility();
 
     const _onConfirm = (e: PressEvent) => {
         setVisibility(false);
@@ -35,9 +36,11 @@ export function useConfirmProps({ question, onConfirm, onCancel }: Props): [moda
         console.log("useConfirm false");
     }
 
+    const modalContent = (question && <Text value={question} /> || content) ?? <Text value="Would you like to confirm?" />
+
     const modal = (
         <Modal style={Styles.modal}>
-            <Text value={question} />
+            {modalContent}
             <View style={Styles.buttonContainer}>
                 <Button onPress={_onConfirm} title="Confirm" type="confirm" />
                 <Button onPress={_onCancel} title="Cancel" type="cancel" />
@@ -49,8 +52,12 @@ export function useConfirmProps({ question, onConfirm, onCancel }: Props): [moda
 
     return [modal, callConfirm]
 }
-export function useConfirmParams(question: string, onConfirm?: PressEventHandler, onCancel?: PressEventHandler) {
-    return useConfirmProps({ question, onConfirm, onCancel })
+export function useConfirmParams(source: string | JSX.Element, onConfirm?: PressEventHandler, onCancel?: PressEventHandler) {
+    return useConfirmProps({ 
+        question: typeof source === 'string' ? source : undefined, 
+        content: typeof source !== 'string' ? source : undefined,
+        onConfirm, onCancel 
+    })
 }
 
 export default useConfirmParams;
