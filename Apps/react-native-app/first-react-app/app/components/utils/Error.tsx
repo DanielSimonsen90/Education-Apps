@@ -1,13 +1,11 @@
 import React from 'react'
-import { View } from 'react-native'
+import { StyleProp, View, ViewStyle } from 'react-native'
 import { Text } from 'react-native-elements'
-// import { BaseProps } from 'danholibraryrjs';
+import { BaseProps } from 'danholibraryrjs';
 
-type BaseProps = {
-    style?: any
-} //temp until DanhoLibraryRJS is okay
-type Props = BaseProps & {
+type Props = Omit<BaseProps, 'style'> & {
     error: Error
+    style?: StyleProp<ViewStyle>
 }
 
 export default function Error({ error, style }: Props) {

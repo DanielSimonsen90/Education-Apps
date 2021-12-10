@@ -6,11 +6,11 @@ import { useModalVisibility } from './providers/ModalVisibilityProvider'
 import { css, getPercentage } from '../../../config';
 
 type Props = BaseProps & ModalProps & {
-
+    modalId: string
 }
 
-export default function Modal({ children, style, ..._props }: Props) {
-    const [setVisible, visible] = useModalVisibility();
+export default function Modal({ children, style, modalId, ..._props }: Props) {
+    const [setVisible, visible] = useModalVisibility(modalId);
     const props = Object.assign({
         transparent: true,
         animationType: 'slide',

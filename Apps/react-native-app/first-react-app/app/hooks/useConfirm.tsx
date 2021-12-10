@@ -10,6 +10,7 @@ type PressEventHandler = (e: PressEvent) => void;
 type Props = Omit<BaseProps<false>, 'style'> & {
     question?: string
     content?: JSX.Element
+    confirmId: string,
     // style?: {
     //     modal?: Styleable,
     //     text?: StyleProp<TextStyle>,
@@ -21,8 +22,9 @@ type Props = Omit<BaseProps<false>, 'style'> & {
     onConfirm?: PressEventHandler
     onCancel?: PressEventHandler
 }
-export function useConfirmProps({ question, content, onConfirm, onCancel }: Props): [modal: JSX.Element, callConfirm: () => void] {
-    const [setVisibility] = useModalVisibility();
+export function useConfirmProps({ question, content, confirmId, onConfirm, onCancel }: Props): [modal: JSX.Element, callConfirm: () => void] {
+    const key = `confirm-${confirmId}`;
+    const [setVisibility] = useModalVisibility(key);
 
     const _onConfirm = (e: PressEvent) => {
         setVisibility(false);
@@ -39,7 +41,7 @@ export function useConfirmProps({ question, content, onConfirm, onCancel }: Prop
     const modalContent = (question && <Text value={question} /> || content) ?? <Text value="Would you like to confirm?" />
 
     const modal = (
-        <Modal style={Styles.modal}>
+        <Modal style={Styles.modal} modalId={key}>
             {modalContent}
             <View style={Styles.buttonContainer}>
                 <Button onPress={_onConfirm} title="Confirm" type="confirm" />
@@ -52,11 +54,11 @@ export function useConfirmProps({ question, content, onConfirm, onCancel }: Prop
 
     return [modal, callConfirm]
 }
-export function useConfirmParams(source: string | JSX.Element, onConfirm?: PressEventHandler, onCancel?: PressEventHandler) {
+export function useConfirmParams(source: string | JSX.Element, confirmId: string, onConfirm?: PressEventHandler, onCancel?: PressEventHandler) {
     return useConfirmProps({ 
         question: typeof source === 'string' ? source : undefined, 
         content: typeof source !== 'string' ? source : undefined,
-        onConfirm, onCancel 
+        onConfirm, onCancel , confirmId
     })
 }
 
@@ -64,7 +66,8 @@ export default useConfirmParams;
 
 const Styles = StyleSheet.create({
     modal: {
-        overflow: 'hidden'
+        overflow: 'hidden',
+        padding: '2%'
     },
     buttonContainer: {
         display: 'flex', flexDirection: 'row', width: '100%', overflow: 'hidden'

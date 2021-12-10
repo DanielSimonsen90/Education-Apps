@@ -36,13 +36,13 @@ export default function DatePicker({ initialState, onChange }: Props) {
     )
 
     return (
-        <SafeAreaView>
-            <SafeAreaView>
+        <SafeAreaView style={[Styles.flex]}>
+            <SafeAreaView style={[Styles.flex]}>
                 {createInputComponent(year, 'Year', (d, v) => d.setFullYear(v), setYear)}
                 {createInputComponent(month, 'Month', (d, v) => d.setMonth(v), setMonth)}
                 {createInputComponent(day, 'Day', (d, v) => d.setDate(v), setDay)}
             </SafeAreaView>
-            <SafeAreaView>
+            <SafeAreaView style={[Styles.flex]}>
                 {createInputComponent(hour, 'Hour', (d, v) => d.setHours(v), setHour)}
                 {createInputComponent(minute, 'Minute', (d, v) => d.setMinutes(v), setMinute)}
             </SafeAreaView>

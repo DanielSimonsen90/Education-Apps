@@ -10,7 +10,7 @@ import useAddItemModal from '../hooks/useAddItemModal'
 
 export default function TodosView() {
     /* State & Props */
-    const [confirmModal, triggerConfirm] = useConfirm("Are you sure, you want to clear all of your completed to-dos?", 
+    const [confirmClearModal, triggerConfirmClear] = useConfirm("Are you sure, you want to clear all of your completed to-dos?", "clear-todos",
         () => setTodos(v => selectedTodos && v.filter(i => !i.completed) || [])
     );
     const [addItemModal, callAddItemModal] = useAddItemModal();
@@ -24,7 +24,7 @@ export default function TodosView() {
         // setTodos(v => [...v, item])
         callAddItemModal()
     }
-    const onClearCompletedPressed = (e: PressEvent) => triggerConfirm();
+    const onClearCompletedPressed = (e: PressEvent) => triggerConfirmClear();
 
     /* Components */
     const clearComponent = containsTodos && (
@@ -45,7 +45,7 @@ export default function TodosView() {
 
     return (
         <SafeAreaView style={Styles.container}>
-            {confirmModal}
+            {confirmClearModal}
             {addItemModal}
             <SafeAreaView style={Styles.listContainer}>
                 {todoItemsListView}

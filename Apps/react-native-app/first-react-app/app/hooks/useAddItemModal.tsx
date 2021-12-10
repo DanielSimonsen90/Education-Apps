@@ -17,8 +17,7 @@ export default function useAddItemModal(): [modal: JSX.Element, callAddItemModal
     const [description, setDescription] = useState("");
     const [deadline, setDate] = useState(now);
     const [todos, setTodos] = useTodos();
-
-    const [modal, callConfirm] = useConfirmProps({
+    const [confirmModal, triggerConfirmModal] = useConfirmProps({ confirmId: "add-item",
         content: (
             <>
                 <TextInput style={[Style.getWide]} placeholder="Title" placeholderTextColor={placeholderColor} value={title} onPressIn={e => e.preventDefault()} onChangeText={setTitle} />
@@ -31,7 +30,7 @@ export default function useAddItemModal(): [modal: JSX.Element, callAddItemModal
         }
     })
 
-    return [modal, callConfirm];
+    return [confirmModal, triggerConfirmModal];
 }
 
 const Style = StyleSheet.create({
