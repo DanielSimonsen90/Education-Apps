@@ -1,44 +1,35 @@
-import { BaseProps } from 'danholibraryrjs'
-import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
-
-type SetModalType = [setModalVisibility: Dispatch<SetStateAction<boolean>>, showing: boolean];
-type ModalsContextType = [modals: Map<string, boolean>, setModals: Dispatch<SetStateAction<Map<string, boolean>>>];
-const ModalsContext = createContext<ModalsContextType>([new Map(), () => new Map()])
-
-export function useModalVisibility(id: string): SetModalType {
-    const [modals, setModals] = useContext(ModalsContext);
-    const [visible, _setVisible] = useState(modals.get(id) ?? false);
-    const setVisible = (state: SetStateAction<boolean>) => {
-        console.log(state);
-        
-        setModals(ms => ms.set(id, 
-            typeof state === 'function' ? 
-            state(visible) : 
-            state
-        ));
-        _setVisible(state);
-    }
-
-    console.log(`useModalVisibility, ${id}: ${visible}`);
-
-    return [setVisible, visible]
+import { BaseProps } from 'danholibraryrjs';
+import React, { createContext, Dispatch, SetStateAction, useContext, useState } from 'react'
+export type ModalMountable = {
+    onMount?: (id: string, showing: boolean) => void
+    onUnmount?: (id: string, showing: boolean) => void
 }
 
-type Props = BaseProps & {
+type ModalContextType = (id: string, props?: ModalMountable) => ModalContextReturnType;
+type ModalContextReturnType = [setVisibility: Dispatch<SetStateAction<boolean>>, visibility: boolean]
 
+const ModalContext = createContext<ModalContextType>(() => [() => false, false]);
+export function useModalVisibility(id: string, props?: ModalMountable) {
+    return useContext(ModalContext)(id, props);
 }
 
-export default function ModalVisibilityProvider({ children }: Props) {
-    const [modals, setModals] = useState<Map<string, boolean>>(new Map());
-    const getModal = (id: string): SetModalType => {
-        const visibility = modals.get(id) ?? false;
-        const setVisibility = (state: boolean | ((preState: boolean) => boolean)) => setModals(ms => ms.set(id, typeof state === 'function' ? state(visibility) : state));
-        return [setVisibility, visibility];
+export default function ModalVisibilityProvider({ children }: BaseProps) {
+    const [modals, setModals] = useState(new Map<string, boolean>());
+    const getModal = (id: string, props?: ModalMountable): ModalContextReturnType => {
+        const visibility = modals.get(id);
+        const setVisibility = (state: boolean) => {
+            if (props) state ? props.onMount?.(id, state) : props.onUnmount?.(id, state);
+            setModals(ms => new Map([...ms, [id, state]]));
+        }
+
+        if (visibility === undefined) setVisibility(false);
+
+        return [setVisibility, visibility] as ModalContextReturnType
     }
 
     return (
-        <ModalsContext.Provider value={getModal}>
+        <ModalContext.Provider value={getModal}>
             {children}
-        </ModalsContext.Provider>
+        </ModalContext.Provider>
     )
 }

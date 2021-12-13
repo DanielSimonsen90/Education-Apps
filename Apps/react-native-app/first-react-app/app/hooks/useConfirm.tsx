@@ -1,13 +1,17 @@
 import { BaseProps } from 'danholibraryrjs';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, GestureResponderEvent as PressEvent, StyleSheet } from 'react-native';
 import Button from '../components/utils/react-native-components/Button';
 import Modal from '../components/utils/react-native-components/Modal';
-import { useModalVisibility } from '../components/utils/react-native-components/providers/ModalVisibilityProvider';
+import { ModalMountable, useModalVisibility } from '../components/utils/react-native-components/providers/ModalVisibilityProvider';
 import Text from '../components/utils/react-native-components/Text';
 
 type PressEventHandler = (e: PressEvent) => void;
-type Props = Omit<BaseProps<false>, 'style'> & {
+type ConfirmHandlers = {
+    onConfirm?: PressEventHandler, 
+    onCancel?: PressEventHandler
+}
+type Props = Omit<BaseProps<false>, 'style'> & ModalMountable & ConfirmHandlers & {
     question?: string
     content?: JSX.Element
     confirmId: string,
@@ -19,18 +23,15 @@ type Props = Omit<BaseProps<false>, 'style'> & {
     //     confirm?: Styleable,
     //     deny?: Styleable,
     // }
-    onConfirm?: PressEventHandler
-    onCancel?: PressEventHandler
 }
-export function useConfirmProps({ question, content, confirmId, onConfirm, onCancel }: Props): [modal: JSX.Element, callConfirm: () => void] {
+export function useConfirmProps({ question, content, confirmId, onMount, onUnmount, onConfirm, onCancel }: Props): [modal: JSX.Element, callConfirm: () => void] {
     const key = `confirm-${confirmId}`;
-    const [setVisibility] = useModalVisibility(key);
+    const [setVisibility] = useModalVisibility(key, { onMount, onUnmount });
 
     const _onConfirm = (e: PressEvent) => {
         setVisibility(false);
         onConfirm?.(e);
         console.log("useConfirm true");
-        
     }
     const _onCancel = (e: PressEvent) => {
         setVisibility(false)
@@ -38,7 +39,9 @@ export function useConfirmProps({ question, content, confirmId, onConfirm, onCan
         console.log("useConfirm false");
     }
 
-    const modalContent = (question && <Text value={question} /> || content) ?? <Text value="Would you like to confirm?" />
+    const modalContent = (
+        question && <Text value={question} /> || content
+    ) ?? <Text value="Would you like to confirm?" />
 
     const modal = (
         <Modal style={Styles.modal} modalId={key}>
@@ -54,22 +57,25 @@ export function useConfirmProps({ question, content, confirmId, onConfirm, onCan
 
     return [modal, callConfirm]
 }
-export function useConfirmParams(source: string | JSX.Element, confirmId: string, onConfirm?: PressEventHandler, onCancel?: PressEventHandler) {
-    return useConfirmProps({ 
+export function useConfirmParams(source: string | JSX.Element, confirmId: string, confirmHandlers?: ConfirmHandlers, mountHandlers?: ModalMountable) {
+    return useConfirmProps({ confirmId,
         question: typeof source === 'string' ? source : undefined, 
         content: typeof source !== 'string' ? source : undefined,
-        onConfirm, onCancel , confirmId
+        ...confirmHandlers, ...mountHandlers
     })
 }
-
 export default useConfirmParams;
 
 const Styles = StyleSheet.create({
     modal: {
         overflow: 'hidden',
-        padding: '2%'
+        padding: '2%',
+        width: '100%'
     },
     buttonContainer: {
-        display: 'flex', flexDirection: 'row', width: '100%', overflow: 'hidden'
+        display: 'flex', flexDirection: 'row', 
+        width: '100%', 
+        overflow: 'hidden', 
+        marginTop: '2%', marginBottom: '2%', alignSelf: 'flex-end'
     }
 })
