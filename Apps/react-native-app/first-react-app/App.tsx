@@ -1,6 +1,6 @@
 import Sidebar from './app/components/Sidebar';
 // import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { css } from './app/config';
 import TodosView from './app/components/TodosView';

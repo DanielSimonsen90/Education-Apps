@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { SafeAreaView, StyleSheet } from 'react-native'
+import { SafeAreaView, StyleProp, StyleSheet, TextStyle } from 'react-native'
 import { css } from '../../config';
 import NumberInput from './NumberInput';
 
@@ -9,9 +9,13 @@ type SetValue = (date: Date, value: number) => number
 type Props = {
     initialState?: Date,
     onChange?: OnChange<Date>,
+
+    containerStyle?: StyleProp<TextStyle>
+    groupStyle?: StyleProp<TextStyle>
+    inputStyle?: StyleProp<TextStyle>
 }
 
-export default function DatePicker({ initialState, onChange }: Props) {
+export default function DatePicker({ initialState, onChange, containerStyle, groupStyle, inputStyle }: Props) {
     const [date, setDate] = useState(initialState || new Date());
     const [day, setDay] = useState(date.getDate());
     const [month, setMonth] = useState(date.getMonth());
@@ -26,7 +30,7 @@ export default function DatePicker({ initialState, onChange }: Props) {
     }, [day, month, year, hour, minute])
 
     const createInputComponent = (value: number, type: string, setValue: SetValue, onChange: OnChange<number>) => (
-        <NumberInput style={Styles.inputStyle} forceDoubleDigits={true}
+        <NumberInput style={[Styles.inputStyle, inputStyle]} forceDoubleDigits={true}
             placeholderTextColor={css.color.dampen} placeholder={type} 
             initialState={value} allowNegative={false}
             onChange={v => {
@@ -37,13 +41,13 @@ export default function DatePicker({ initialState, onChange }: Props) {
     )
 
     return (
-        <SafeAreaView style={[Styles.flex, Styles.goWide]}>
-            <SafeAreaView style={Styles.flex}>
+        <SafeAreaView style={[Styles.flex, Styles.goWide, containerStyle]}>
+            <SafeAreaView style={[Styles.flex, groupStyle]}>
                 {createInputComponent(day, 'Day', (d, v) => d.setDate(v), setDay)}
                 {createInputComponent(month, 'Month', (d, v) => d.setMonth(v), setMonth)}
                 {createInputComponent(year, 'Year', (d, v) => d.setFullYear(v), setYear)}
             </SafeAreaView>
-            <SafeAreaView style={Styles.flex}>
+            <SafeAreaView style={[Styles.flex, groupStyle]}>
                 {createInputComponent(hour, 'Hour', (d, v) => d.setHours(v), setHour)}
                 {createInputComponent(minute, 'Minute', (d, v) => d.setMinutes(v), setMinute)}
             </SafeAreaView>

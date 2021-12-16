@@ -31,12 +31,10 @@ export function useConfirmProps({ question, content, confirmId, onMount, onUnmou
     const _onConfirm = (e: PressEvent) => {
         setVisibility(false);
         onConfirm?.(e);
-        console.log("useConfirm true");
     }
     const _onCancel = (e: PressEvent) => {
         setVisibility(false)
         onCancel?.(e);
-        console.log("useConfirm false");
     }
 
     const modalContent = (

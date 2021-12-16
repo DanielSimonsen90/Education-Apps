@@ -16,7 +16,7 @@ export default function TodoItemModal(props: Props) {
     const [value, setValue] = useTodo(i => i == props.value);
     const { title, description, deadline } = value;
     const [completed, setCompleted] = useState(value.completed);
-    const deadlineResult = TodoItem.GetDeadlineResult(value);
+    const deadlineResult = TodoItem.GetCompletion(value);
 
     const { containerStyles, elementStyles, deadlineStyles } = TodoItemModalStyles();
     const onCompletedPressed = () => setCompleted(v => !v);
@@ -39,7 +39,8 @@ export default function TodoItemModal(props: Props) {
             </View>
             <View style={containerStyles.bottom}>
                 {deadline && <Text style={{ ...elementStyles.deadline, ...(
-                    deadlineResult == 'Passed' ? deadlineStyles.passed :
+                    deadlineResult == 'Completed' ? deadlineStyles.passed :
+                    deadlineResult == 'In Progress' ? deadlineStyles.doing :
                     deadlineResult == 'Missed' ? deadlineStyles.missed :
                     deadlineStyles.future
                 )}}>{deadline.toString()}</Text>}
@@ -83,6 +84,9 @@ const TodoItemModalStyles = () => {
         }),
         deadlineStyles: StyleSheet.create({
             passed: {
+
+            },
+            doing: {
 
             },
             missed: {
